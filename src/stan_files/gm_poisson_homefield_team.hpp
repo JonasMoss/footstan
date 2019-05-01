@@ -20,7 +20,7 @@
 
 #include <stan/model/model_header.hpp>
 
-namespace model_gm_poisson_namespace {
+namespace model_gm_poisson_homefield_team_namespace {
 
 using std::istream;
 using std::string;
@@ -35,25 +35,25 @@ static int current_statement_begin__;
 
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
-    reader.add_event(0, 0, "start", "model_gm_poisson");
-    reader.add_event(40, 38, "end", "model_gm_poisson");
+    reader.add_event(0, 0, "start", "model_gm_poisson_homefield_team");
+    reader.add_event(41, 39, "end", "model_gm_poisson_homefield_team");
     return reader;
 }
 
 #include <meta_header.hpp>
- class model_gm_poisson : public prob_grad {
+ class model_gm_poisson_homefield_team : public prob_grad {
 private:
     int N_MATCHES;
     int N_TEAMS;
     vector<vector<int> > y;
 public:
-    model_gm_poisson(stan::io::var_context& context__,
+    model_gm_poisson_homefield_team(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
         : prob_grad(0) {
         ctor_body(context__, 0, pstream__);
     }
 
-    model_gm_poisson(stan::io::var_context& context__,
+    model_gm_poisson_homefield_team(stan::io::var_context& context__,
         unsigned int random_seed__,
         std::ostream* pstream__ = 0)
         : prob_grad(0) {
@@ -71,7 +71,7 @@ public:
 
         current_statement_begin__ = -1;
 
-        static const char* function__ = "model_gm_poisson_namespace::model_gm_poisson";
+        static const char* function__ = "model_gm_poisson_homefield_team_namespace::model_gm_poisson_homefield_team";
         (void) function__;  // dummy to suppress unused var warning
         size_t pos__;
         (void) pos__;  // dummy to suppress unused var warning
@@ -134,6 +134,11 @@ public:
             current_statement_begin__ = 10;
             ++num_params_r__;
             current_statement_begin__ = 11;
+            validate_non_negative_index("homefields", "N_TEAMS", N_TEAMS);
+            num_params_r__ += N_TEAMS;
+            current_statement_begin__ = 12;
+            ++num_params_r__;
+            current_statement_begin__ = 13;
             ++num_params_r__;
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -142,7 +147,7 @@ public:
         }
     }
 
-    ~model_gm_poisson() { }
+    ~model_gm_poisson_homefield_team() { }
 
 
     void transform_inits(const stan::io::var_context& context__,
@@ -166,7 +171,7 @@ public:
             attack[i0__] = vals_r__[pos__++];
         for (int i0__ = 0U; i0__ < N_TEAMS; ++i0__)
             try {
-            writer__.scalar_lb_unconstrain(0,attack[i0__]);
+            writer__.scalar_unconstrain(attack[i0__]);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable attack: ") + e.what());
         }
@@ -182,7 +187,7 @@ public:
             defense[i0__] = vals_r__[pos__++];
         for (int i0__ = 0U; i0__ < N_TEAMS; ++i0__)
             try {
-            writer__.scalar_lb_unconstrain(0,defense[i0__]);
+            writer__.scalar_unconstrain(defense[i0__]);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable defense: ") + e.what());
         }
@@ -200,17 +205,46 @@ public:
             throw std::runtime_error(std::string("Error transforming variable baseline: ") + e.what());
         }
 
-        if (!(context__.contains_r("homefield")))
-            throw std::runtime_error("variable homefield missing");
-        vals_r__ = context__.vals_r("homefield");
+        if (!(context__.contains_r("homefields")))
+            throw std::runtime_error("variable homefields missing");
+        vals_r__ = context__.vals_r("homefields");
         pos__ = 0U;
-        context__.validate_dims("initialization", "homefield", "double", context__.to_vec());
-        double homefield(0);
-        homefield = vals_r__[pos__++];
-        try {
-            writer__.scalar_lb_unconstrain(0,homefield);
+        validate_non_negative_index("homefields", "N_TEAMS", N_TEAMS);
+        context__.validate_dims("initialization", "homefields", "double", context__.to_vec(N_TEAMS));
+        std::vector<double> homefields(N_TEAMS,double(0));
+        for (int i0__ = 0U; i0__ < N_TEAMS; ++i0__)
+            homefields[i0__] = vals_r__[pos__++];
+        for (int i0__ = 0U; i0__ < N_TEAMS; ++i0__)
+            try {
+            writer__.scalar_unconstrain(homefields[i0__]);
         } catch (const std::exception& e) { 
-            throw std::runtime_error(std::string("Error transforming variable homefield: ") + e.what());
+            throw std::runtime_error(std::string("Error transforming variable homefields: ") + e.what());
+        }
+
+        if (!(context__.contains_r("homefield_mean")))
+            throw std::runtime_error("variable homefield_mean missing");
+        vals_r__ = context__.vals_r("homefield_mean");
+        pos__ = 0U;
+        context__.validate_dims("initialization", "homefield_mean", "double", context__.to_vec());
+        double homefield_mean(0);
+        homefield_mean = vals_r__[pos__++];
+        try {
+            writer__.scalar_unconstrain(homefield_mean);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable homefield_mean: ") + e.what());
+        }
+
+        if (!(context__.contains_r("homefield_sd")))
+            throw std::runtime_error("variable homefield_sd missing");
+        vals_r__ = context__.vals_r("homefield_sd");
+        pos__ = 0U;
+        context__.validate_dims("initialization", "homefield_sd", "double", context__.to_vec());
+        double homefield_sd(0);
+        homefield_sd = vals_r__[pos__++];
+        try {
+            writer__.scalar_unconstrain(homefield_sd);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable homefield_sd: ") + e.what());
         }
 
         params_r__ = writer__.data_r();
@@ -251,9 +285,9 @@ public:
             attack.reserve(dim_attack_0__);
             for (size_t k_0__ = 0; k_0__ < dim_attack_0__; ++k_0__) {
                 if (jacobian__)
-                    attack.push_back(in__.scalar_lb_constrain(0,lp__));
+                    attack.push_back(in__.scalar_constrain(lp__));
                 else
-                    attack.push_back(in__.scalar_lb_constrain(0));
+                    attack.push_back(in__.scalar_constrain());
             }
 
             vector<local_scalar_t__> defense;
@@ -261,9 +295,9 @@ public:
             defense.reserve(dim_defense_0__);
             for (size_t k_0__ = 0; k_0__ < dim_defense_0__; ++k_0__) {
                 if (jacobian__)
-                    defense.push_back(in__.scalar_lb_constrain(0,lp__));
+                    defense.push_back(in__.scalar_constrain(lp__));
                 else
-                    defense.push_back(in__.scalar_lb_constrain(0));
+                    defense.push_back(in__.scalar_constrain());
             }
 
             local_scalar_t__ baseline;
@@ -273,12 +307,29 @@ public:
             else
                 baseline = in__.scalar_constrain();
 
-            local_scalar_t__ homefield;
-            (void) homefield;  // dummy to suppress unused var warning
+            vector<local_scalar_t__> homefields;
+            size_t dim_homefields_0__ = N_TEAMS;
+            homefields.reserve(dim_homefields_0__);
+            for (size_t k_0__ = 0; k_0__ < dim_homefields_0__; ++k_0__) {
+                if (jacobian__)
+                    homefields.push_back(in__.scalar_constrain(lp__));
+                else
+                    homefields.push_back(in__.scalar_constrain());
+            }
+
+            local_scalar_t__ homefield_mean;
+            (void) homefield_mean;  // dummy to suppress unused var warning
             if (jacobian__)
-                homefield = in__.scalar_lb_constrain(0,lp__);
+                homefield_mean = in__.scalar_constrain(lp__);
             else
-                homefield = in__.scalar_lb_constrain(0);
+                homefield_mean = in__.scalar_constrain();
+
+            local_scalar_t__ homefield_sd;
+            (void) homefield_sd;  // dummy to suppress unused var warning
+            if (jacobian__)
+                homefield_sd = in__.scalar_constrain(lp__);
+            else
+                homefield_sd = in__.scalar_constrain();
 
 
             // transformed parameters
@@ -292,61 +343,55 @@ public:
 
             // model body
 
-            current_statement_begin__ = 18;
+            current_statement_begin__ = 20;
             lp_accum__.add(normal_log<propto__>(baseline, 0, 1));
-            current_statement_begin__ = 19;
-            lp_accum__.add(normal_log<propto__>(homefield, 0, 1));
-            if (homefield < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-            else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
             current_statement_begin__ = 21;
-            for (int i = 1; i <= N_TEAMS; ++i) {
-
-                current_statement_begin__ = 22;
-                lp_accum__.add(normal_log<propto__>(get_base1(attack,i,"attack",1), 0, 1));
-                if (get_base1(attack,i,"attack",1) < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-                else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
-                current_statement_begin__ = 23;
-                lp_accum__.add(normal_log<propto__>(get_base1(defense,i,"defense",1), 0, 1));
-                if (get_base1(defense,i,"defense",1) < 0) lp_accum__.add(-std::numeric_limits<double>::infinity());
-                else lp_accum__.add(-normal_ccdf_log(0, 0, 1));
-            }
-            current_statement_begin__ = 27;
+            lp_accum__.add(normal_log<propto__>(homefield_mean, 0, 1));
+            current_statement_begin__ = 22;
+            lp_accum__.add(exponential_log<propto__>(homefield_sd, 1));
+            current_statement_begin__ = 23;
+            lp_accum__.add(normal_log<propto__>(homefields, homefield_mean, homefield_sd));
+            current_statement_begin__ = 24;
+            lp_accum__.add(normal_log<propto__>(attack, 0, 1));
+            current_statement_begin__ = 25;
+            lp_accum__.add(normal_log<propto__>(defense, 0, 1));
+            current_statement_begin__ = 28;
             for (int i = 1; i <= N_MATCHES; ++i) {
                 {
-                current_statement_begin__ = 28;
+                current_statement_begin__ = 29;
                 int home_index(0);
                 (void) home_index;  // dummy to suppress unused var warning
 
                 stan::math::fill(home_index, std::numeric_limits<int>::min());
                 stan::math::assign(home_index,get_base1(get_base1(y,i,"y",1),3,"y",2));
-                current_statement_begin__ = 29;
+                current_statement_begin__ = 30;
                 int away_index(0);
                 (void) away_index;  // dummy to suppress unused var warning
 
                 stan::math::fill(away_index, std::numeric_limits<int>::min());
                 stan::math::assign(away_index,get_base1(get_base1(y,i,"y",1),4,"y",2));
-                current_statement_begin__ = 30;
+                current_statement_begin__ = 31;
                 local_scalar_t__ home_attack;
                 (void) home_attack;  // dummy to suppress unused var warning
 
                 stan::math::initialize(home_attack, DUMMY_VAR__);
                 stan::math::fill(home_attack,DUMMY_VAR__);
                 stan::math::assign(home_attack,get_base1(attack,home_index,"attack",1));
-                current_statement_begin__ = 31;
+                current_statement_begin__ = 32;
                 local_scalar_t__ home_defense;
                 (void) home_defense;  // dummy to suppress unused var warning
 
                 stan::math::initialize(home_defense, DUMMY_VAR__);
                 stan::math::fill(home_defense,DUMMY_VAR__);
                 stan::math::assign(home_defense,get_base1(defense,home_index,"defense",1));
-                current_statement_begin__ = 32;
+                current_statement_begin__ = 33;
                 local_scalar_t__ away_attack;
                 (void) away_attack;  // dummy to suppress unused var warning
 
                 stan::math::initialize(away_attack, DUMMY_VAR__);
                 stan::math::fill(away_attack,DUMMY_VAR__);
                 stan::math::assign(away_attack,get_base1(attack,away_index,"attack",1));
-                current_statement_begin__ = 33;
+                current_statement_begin__ = 34;
                 local_scalar_t__ away_defense;
                 (void) away_defense;  // dummy to suppress unused var warning
 
@@ -355,9 +400,9 @@ public:
                 stan::math::assign(away_defense,get_base1(defense,away_index,"defense",1));
 
 
-                current_statement_begin__ = 34;
-                lp_accum__.add(poisson_log_log<propto__>(get_base1(get_base1(y,i,"y",1),1,"y",2), (((baseline + homefield) + home_attack) - away_defense)));
                 current_statement_begin__ = 35;
+                lp_accum__.add(poisson_log_log<propto__>(get_base1(get_base1(y,i,"y",1),1,"y",2), (((baseline + get_base1(homefields,home_index,"homefields",1)) + home_attack) - away_defense)));
+                current_statement_begin__ = 36;
                 lp_accum__.add(poisson_log_log<propto__>(get_base1(get_base1(y,i,"y",1),2,"y",2), ((baseline + away_attack) - home_defense)));
                 }
             }
@@ -390,7 +435,9 @@ public:
         names__.push_back("attack");
         names__.push_back("defense");
         names__.push_back("baseline");
-        names__.push_back("homefield");
+        names__.push_back("homefields");
+        names__.push_back("homefield_mean");
+        names__.push_back("homefield_sd");
     }
 
 
@@ -399,6 +446,11 @@ public:
         std::vector<size_t> dims__;
         dims__.resize(0);
         dims__.push_back(N_TEAMS);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(N_TEAMS);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(N_TEAMS);
@@ -421,21 +473,27 @@ public:
 
         vars__.resize(0);
         stan::io::reader<local_scalar_t__> in__(params_r__,params_i__);
-        static const char* function__ = "model_gm_poisson_namespace::write_array";
+        static const char* function__ = "model_gm_poisson_homefield_team_namespace::write_array";
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
         vector<double> attack;
         size_t dim_attack_0__ = N_TEAMS;
         for (size_t k_0__ = 0; k_0__ < dim_attack_0__; ++k_0__) {
-            attack.push_back(in__.scalar_lb_constrain(0));
+            attack.push_back(in__.scalar_constrain());
         }
         vector<double> defense;
         size_t dim_defense_0__ = N_TEAMS;
         for (size_t k_0__ = 0; k_0__ < dim_defense_0__; ++k_0__) {
-            defense.push_back(in__.scalar_lb_constrain(0));
+            defense.push_back(in__.scalar_constrain());
         }
         double baseline = in__.scalar_constrain();
-        double homefield = in__.scalar_lb_constrain(0);
+        vector<double> homefields;
+        size_t dim_homefields_0__ = N_TEAMS;
+        for (size_t k_0__ = 0; k_0__ < dim_homefields_0__; ++k_0__) {
+            homefields.push_back(in__.scalar_constrain());
+        }
+        double homefield_mean = in__.scalar_constrain();
+        double homefield_sd = in__.scalar_constrain();
             for (int k_0__ = 0; k_0__ < N_TEAMS; ++k_0__) {
             vars__.push_back(attack[k_0__]);
             }
@@ -443,7 +501,11 @@ public:
             vars__.push_back(defense[k_0__]);
             }
         vars__.push_back(baseline);
-        vars__.push_back(homefield);
+            for (int k_0__ = 0; k_0__ < N_TEAMS; ++k_0__) {
+            vars__.push_back(homefields[k_0__]);
+            }
+        vars__.push_back(homefield_mean);
+        vars__.push_back(homefield_sd);
 
         // declare and define transformed parameters
         double lp__ = 0.0;
@@ -496,7 +558,7 @@ public:
     }
 
     static std::string model_name() {
-        return "model_gm_poisson";
+        return "model_gm_poisson_homefield_team";
     }
 
 
@@ -517,8 +579,16 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "baseline";
         param_names__.push_back(param_name_stream__.str());
+        for (int k_0__ = 1; k_0__ <= N_TEAMS; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "homefields" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
         param_name_stream__.str(std::string());
-        param_name_stream__ << "homefield";
+        param_name_stream__ << "homefield_mean";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "homefield_sd";
         param_names__.push_back(param_name_stream__.str());
 
         if (!include_gqs__ && !include_tparams__) return;
@@ -548,8 +618,16 @@ public:
         param_name_stream__.str(std::string());
         param_name_stream__ << "baseline";
         param_names__.push_back(param_name_stream__.str());
+        for (int k_0__ = 1; k_0__ <= N_TEAMS; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "homefields" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
         param_name_stream__.str(std::string());
-        param_name_stream__ << "homefield";
+        param_name_stream__ << "homefield_mean";
+        param_names__.push_back(param_name_stream__.str());
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "homefield_sd";
         param_names__.push_back(param_name_stream__.str());
 
         if (!include_gqs__ && !include_tparams__) return;
@@ -565,7 +643,7 @@ public:
 
 }
 
-typedef model_gm_poisson_namespace::model_gm_poisson stan_model;
+typedef model_gm_poisson_homefield_team_namespace::model_gm_poisson_homefield_team stan_model;
 
 
 #endif

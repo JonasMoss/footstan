@@ -5,10 +5,12 @@ data {
 }
 
 parameters {
-  real<lower = 0> attack[N_TEAMS];
-  real<lower = 0> defense[N_TEAMS];
+  real attack[N_TEAMS];
+  real defense[N_TEAMS];
   real baseline;
-  real<lower = 0> homefield;
+  real homefields[N_TEAMS];
+  real homefield_mean;
+  real homefield_sd;
 }
 
 model {
@@ -16,12 +18,11 @@ model {
   // Prior.
 
   baseline ~ normal(0, 1);
-  homefield ~ normal(0, 1) T[0, ];
-
-  for(i in 1:N_TEAMS) {
-    attack[i] ~ normal(0, 1) T[0, ];
-    defense[i] ~ normal(0, 1) T[0, ];
-  }
+  homefield_mean ~ normal(0, 1);
+  homefield_sd ~ exponential(1);
+  homefields ~ normal(homefield_mean, homefield_sd);
+  attack ~ normal(0, 1);
+  defense ~ normal(0, 1);
 
   // Likelihood.
   for(i in 1:N_MATCHES) {
@@ -31,7 +32,7 @@ model {
     real home_defense = defense[home_index];
     real away_attack  = attack[away_index];
     real away_defense = defense[away_index];
-    y[i, 1] ~ poisson_log(baseline + homefield + home_attack - away_defense);
+    y[i, 1] ~ poisson_log(baseline + homefields[home_index] + home_attack - away_defense);
     y[i, 2] ~ poisson_log(baseline + away_attack - home_defense);
   }
 

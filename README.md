@@ -1,5 +1,8 @@
 # footstan <img src="man/figures/logo.png" align="right" width="60" height="50" />
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+
 *Note:* This project has no pre-release yet! If you're interested in a 100% working and full-featured package, you will have to wait.
 
 ## Description

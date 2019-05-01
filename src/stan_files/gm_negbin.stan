@@ -7,6 +7,7 @@ data {
 parameters {
   real<lower = 0> attack[N_TEAMS];
   real<lower = 0> defense[N_TEAMS];
+  real<lower = 0> dispersion;
   real baseline;
   real<lower = 0> homefield;
 }
@@ -17,6 +18,7 @@ model {
 
   baseline ~ normal(0, 1);
   homefield ~ normal(0, 1) T[0, ];
+  dispersion ~ exponential(1);
 
   for(i in 1:N_TEAMS) {
     attack[i] ~ normal(0, 1) T[0, ];
@@ -31,8 +33,8 @@ model {
     real home_defense = defense[home_index];
     real away_attack  = attack[away_index];
     real away_defense = defense[away_index];
-    y[i, 1] ~ poisson_log(baseline + homefield + home_attack - away_defense);
-    y[i, 2] ~ poisson_log(baseline + away_attack - home_defense);
+    y[i, 1] ~ neg_binomial_2_log(baseline + homefield + home_attack - away_defense, dispersion);
+    y[i, 2] ~ neg_binomial_2_log(baseline + away_attack - home_defense, dispersion);
   }
 
 }

@@ -5,7 +5,7 @@
 \title{Fitting Goal Models with STAN}
 \usage{
 gm(data, family = "poisson", time = c("none", "dv"),
-  date = lubridate::now(), ...)
+  homefield = c("intercept", "team"), date = lubridate::now(), ...)
 }
 \arguments{
 \item{data}{A list or data frame containing the data. Should contain the
@@ -20,6 +20,9 @@ Negative Binomial in the future.}
 
 \item{time}{Time dependence. Choose "none" for no time dependence or "dv" for
 for decreasing variance time dependence with an inverse logit link.}
+
+\item{homefield}{The kind of homefield advantage. Can be the same for all
+teams or team specific.}
 
 \item{date}{Optional argument telling the date of the match you wish to
 predict. Only used when \code{time = "dv"}.}

@@ -1,22 +1,22 @@
 Package: footstan
 Title: Fit Goal Models in STAN
 Version: 0.0.1.0000
-Authors@R: 
+Authors@R:
     person(given = "Jonas",
            family = "Moss",
            role = c("aut", "cre"),
            email = "jonas.gjertsen@gmail.com")
 Description: Fits a selection of goal models in STAN.
 License: GPL (>=3)
-Depends: 
+Depends:
     methods,
     R (>= 3.4.0),
     Rcpp (>= 0.12.19)
-Imports: 
+Imports:
     rstan (>= 2.18.1),
     dplyr,
     rstantools (>= 1.5.1)
-LinkingTo: 
+LinkingTo:
     BH (>= 1.66.0-1),
     Rcpp (>= 0.12.19),
     RcppEigen (>= 0.3.3.4.0),
@@ -27,3 +27,4 @@ LazyData: true
 NeedsCompilation: yes
 SystemRequirements: GNU make
 RoxygenNote: 6.1.0
+Suggests: testthat

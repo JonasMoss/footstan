@@ -14,6 +14,8 @@
 #'    Negative Binomial in the future.
 #' @param time Time dependence. Choose "none" for no time dependence or "dv" for
 #'    for decreasing variance time dependence with an inverse logit link.
+#' @param homefield The kind of homefield advantage. Can be the same for all
+#'    teams or team specific.
 #' @param date Optional argument telling the date of the match you wish to
 #'    predict. Only used when \code{time = "dv"}.
 #' @param ... Passed to \code{rstan::sampling}.
@@ -32,9 +34,10 @@
 #' }
 
 gm = function(data, family = "poisson", time = c("none", "dv"),
-              date = lubridate::now(), ...) {
+              homefield = c("intercept", "team"), date = lubridate::now(), ...) {
 
   time = match.arg(time, c("none", "dv"))
+  homefield = match.arg(homefield, c("intercept", "team"))
 
   teams = sort(unique(data$HomeTeam))
   y = dplyr::mutate(data,
@@ -50,6 +53,8 @@ gm = function(data, family = "poisson", time = c("none", "dv"),
                    y = y)
 
   model = stanmodels$gm_poisson
+
+  if(homefield == "team") model = stanmodels$gm_poisson_homefield_team
 
   if(time == "dv") {
     stan_data$difftimes = -as.numeric(difftime(data$Time, date),
